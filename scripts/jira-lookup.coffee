@@ -59,7 +59,7 @@ SetRoomStylePref = (robot, msg, pref) ->
 
 GetRoomStylePref = (robot, msg) ->
   room  = msg.message.user.reply_to || msg.message.user.room
-  def_style = process.env.HUBOT_JIRA_LOOKUP_STYLE || "long"
+  def_style = process.env.HUBOT_JIRA_LOOKUP_STYLE || "short"
   rm_style = StylePrefStore[room]
   if rm_style
     return rm_style
