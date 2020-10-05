@@ -99,7 +99,7 @@ module.exports = (robot) ->
 
   console.log "Ignore Users: #{ignored_users}"
 
-  robot.respond /set jira_lookup_style (long|short)/, (msg) ->
+  robot.respond /set jira_lookup_style (long|short|tiny)/, (msg) ->
     SetRoomStylePref robot, msg, msg.match[1]
 
   robot.hear /\b[a-zA-Z]{2,12}-[0-9]{1,10}[a-z]*\b/g, (msg) ->
@@ -195,6 +195,8 @@ reportIssue = (robot, msg, issue) ->
               else
                 fallback += "Description:\t #{data.description.value}\n"
             fallback += "County:\t #{data.county.value}\nAssignee:\t #{data.assignee.value}\nStatus:\t #{data.status.value}\nLink:\t #{data.link.value}\n"
+          else if style is "tiny"
+            fallback = "#{data.key.value}: #{data.summary.value} [status #{data.status.value} ] #{data.link.value}"            
           else
             fallback = "#{data.key.value}: #{data.summary.value} [status #{data.status.value}; assigned to #{data.assignee.value}; county: #{data.county.value} ] #{data.link.value}"
             
@@ -233,7 +235,17 @@ reportIssue = (robot, msg, issue) ->
                   }
                 ]
               ]
-            }                
+            }
+          else if style is "tiny"
+            message = {
+                attachments: [
+                  fallback: fallback
+                  title: "#{data.key.value}: #{data.summary.value}"
+                  title_link: data.link.value
+                  text: "Status: #{data.status.value}"
+                ]
+              }
+                  
           else
             county = ""
             county = "; County: #{data.county.value} " if data.county.value? and data.county.value isnt "n/a"
