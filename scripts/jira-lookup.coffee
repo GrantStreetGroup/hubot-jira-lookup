@@ -99,7 +99,7 @@ module.exports = (robot) ->
 
   console.log "Ignore Users: #{ignored_users}"
 
-  robot.respond /set jira_lookup_style (long|short|tiny)/, (msg) ->
+  robot.respond /set jira_lookup_style (long|short|tiny|off)/, (msg) ->
     SetRoomStylePref robot, msg, msg.match[1]
 
   robot.hear /\b[a-zA-Z]{2,12}-[0-9]{1,10}[a-z]*\b/g, (msg) ->
@@ -259,7 +259,11 @@ reportIssue = (robot, msg, issue) ->
                 ]
               }
               
-          msg.send message
+          if style is "off"
+            console.log "Not responding"          
+          else
+            msg.send message
+          
 
         catch error
           console.log error
